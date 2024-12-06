@@ -1,6 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import requestApi from '../helpers/api';
 
 const Dashboard = () => {
+    const [dashBoardData, setDashBoardData] = useState({});
+
+    useEffect(() => {
+        requestApi('/users', 'GET', [])
+            .then(response => {
+                console.log(response);
+                setDashBoardData({
+                    ...dashBoardData,
+                    totalUser: response.data.total // chỉ cần lấy tổng không show chi tiết
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
     return (
         <div id='layoutSidenav_content'>
             <main>
@@ -14,11 +30,11 @@ const Dashboard = () => {
                             <div className='card bg-primary text-white mb-4'>
                                 <div className='card-body'>
                                     Total Users
-                                    {/* {dashboardData.totalUser && (
+                                    {dashBoardData.totalUser && (
                                         <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'>
-                                            {dashboardData.totalUser}
+                                            {dashBoardData.totalUser}
                                         </span>
-                                    )} */}
+                                    )}
                                 </div>
                                 <div className='card-footer d-flex align-items-center justify-content-between'>
                                     <a
