@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
     return (
@@ -40,18 +41,12 @@ const Sidebar = () => {
                             data-bs-parent='#sidenavAccordion'
                         >
                             <nav className='sb-sidenav-menu-nested nav'>
-                                {/* <Link to='/users' className='nav-link'>
+                                <Link to='/users' className='nav-link'>
                                     Add User
                                 </Link>
                                 <Link to='/users' className='nav-link'>
                                     List Users
-                                </Link> */}
-                                <a to='/users' className='nav-link'>
-                                    Add User
-                                </a>
-                                <a to='/users' className='nav-link'>
-                                    List Users
-                                </a>
+                                </Link>
                             </nav>
                         </div>
                         <a
@@ -77,18 +72,43 @@ const Sidebar = () => {
                             data-bs-parent='#sidenavAccordion'
                         >
                             <nav className='sb-sidenav-menu-nested nav'>
-                                {/* <Link to='/users' className='nav-link'>
+                                <Link to='/users' className='nav-link'>
                                     Add Post
                                 </Link>
                                 <Link to='/users' className='nav-link'>
                                     List Posts
-                                </Link> */}
-                                <a to='/users' className='nav-link'>
-                                    Add Post
-                                </a>
-                                <a to='/users' className='nav-link'>
-                                    List Posts
-                                </a>
+                                </Link>
+                            </nav>
+                        </div>
+                        <a
+                            className='nav-link collapsed'
+                            href='#'
+                            data-bs-toggle='collapse'
+                            data-bs-target='#collapsePost'
+                            aria-expanded='false'
+                            aria-controls='collapseLayouts'
+                        >
+                            <div className='sb-nav-link-icon'>
+                                <i className='fas fa-columns'></i>
+                            </div>
+                            Categories
+                            <div className='sb-sidenav-collapse-arrow'>
+                                <i className='fas fa-angle-down'></i>
+                            </div>
+                        </a>
+                        <div
+                            className='collapse'
+                            id='collapsePost'
+                            aria-labelledby='headingOne'
+                            data-bs-parent='#sidenavAccordion'
+                        >
+                            <nav className='sb-sidenav-menu-nested nav'>
+                                <Link to='/categories' className='nav-link'>
+                                    Add Category
+                                </Link>
+                                <Link to='/categories' className='nav-link'>
+                                    List Categories
+                                </Link>
                             </nav>
                         </div>
                     </div>

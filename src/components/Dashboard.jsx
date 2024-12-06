@@ -5,7 +5,7 @@ const Dashboard = () => {
     const [dashBoardData, setDashBoardData] = useState({});
 
     useEffect(() => {
-        requestApi('/users', 'GET', [])
+        requestApi('/users', 'GET')
             .then(response => {
                 console.log(response);
                 setDashBoardData({

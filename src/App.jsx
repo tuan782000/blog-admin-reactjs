@@ -8,6 +8,7 @@ import PrivateRoute from './layouts/PrivateRoute';
 import PublicRoute from './layouts/PublicRoute';
 import Layout from './layouts/Layout';
 import 'react-toastify/dist/ReactToastify.css';
+import UserList from './components/user/UserList';
 
 const App = () => {
     return (
@@ -16,6 +17,7 @@ const App = () => {
                 <Route element={<Main />}>
                     <Route element={<PrivateRoute />}>
                         <Route path='/' element={<Dashboard />} />
+                        <Route path='/users' element={<UserList />} />
                     </Route>
                 </Route>
                 {/* Login và Register không có sidebar và header nằm ngoài này */}
