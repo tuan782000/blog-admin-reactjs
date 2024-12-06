@@ -1,4 +1,5 @@
 import React from 'react';
+import LiveSearch from './LiveSearch';
 
 const DataTable = props => {
     const {
@@ -8,7 +9,8 @@ const DataTable = props => {
         numOfPage,
         currentPage,
         onPageChange,
-        onChangeItemsPerPage
+        onChangeItemsPerPage,
+        onKeySearch
     } = props;
 
     const renderHeaders = () => {
@@ -136,7 +138,7 @@ const DataTable = props => {
                     <div className='col-sm-12 col-md-6'>
                         <label className='d-inline-flex float-end'>
                             Search:
-                            {/* <LiveSearch onKeySearch={onKeySearch} /> */}
+                            <LiveSearch onKeySearch={onKeySearch} />
                         </label>
                     </div>
                 </div>

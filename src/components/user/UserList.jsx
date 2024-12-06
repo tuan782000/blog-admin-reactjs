@@ -15,6 +15,8 @@ const UserList = () => {
 
     const [itemPerPage, setitemPerPage] = useState(1);
 
+    const [searchString, setSearchString] = useState('');
+
     const columns = [
         {
             name: 'ID',
@@ -65,7 +67,7 @@ const UserList = () => {
     useEffect(() => {
         dispatch(actions.controlLoading(true));
         // truyền theo query - quyết định 1 trang có nhiêu phần tử
-        let query = `?items_per_page=${itemPerPage}&page=${currentPage}`;
+        let query = `?items_per_page=${itemPerPage}&page=${currentPage}&search=${searchString}`;
         // có thể bỏ mảng [] rỗng đi
         requestApi(`/users${query}`, 'GET', [])
             .then(response => {
@@ -78,7 +80,7 @@ const UserList = () => {
                 dispatch(actions.controlLoading(true));
                 console.log(err);
             });
-    }, [currentPage, itemPerPage]); // để đảm bảo khi currentPage thay đổi thì gọi lại api để dannh sách mới
+    }, [currentPage, itemPerPage, searchString]); // để đảm bảo khi currentPage thay đổi thì gọi lại api để dannh sách mới
 
     console.log(users);
     return (
@@ -100,6 +102,14 @@ const UserList = () => {
                         currentPage={currentPage}
                         onPageChange={setCurrentPage} // onPageChange - sẽ gọi setCurrentPage để set lại currentPage - number - hàm setCurrentPage
                         onChangeItemsPerPage={setitemPerPage} // chọn số lượng item trên 1 trang - bằng cách gọi hàm setitemPerPage
+                        // onKeySearch={setSearchString}
+                        onKeySearch={keyword => {
+                            console.log(
+                                'Keyword in user list comp => ',
+                                keyword
+                            );
+                            setSearchString(keyword);
+                        }}
                     />
                 </div>
             </main>
