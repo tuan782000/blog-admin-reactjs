@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import UserList from './components/user/UserList';
 import UserAdd from './components/user/UserAdd';
 import UserUpdate from './components/user/UserUpdate';
+import PageNotFound from './components/PageNotFound';
 
 const App = () => {
     return (
@@ -31,6 +32,8 @@ const App = () => {
                     <Route path='/register' element={<Register />} />
                 </Route>
             </Route>
+            {/* Những cái nào không có địa chỉ được định nghĩa ở trên thì vào đây */}
+            <Route path='*' element={<PageNotFound />} />
         </Routes>
     );
 };
