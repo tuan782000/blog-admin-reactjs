@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import requestApi from '../helpers/api';
 import { useDispatch } from 'react-redux';
 import * as actions from '../redux/actions';
@@ -28,9 +28,9 @@ const Header = () => {
 
     return (
         <nav className='sb-topnav navbar navbar-expand navbar-dark bg-dark'>
-            <a className='navbar-brand ps-3' href='index.html'>
-                Start Bootstrap
-            </a>
+            <Link className='navbar-brand ps-3' to='/'>
+                Admin
+            </Link>
             <button
                 className='btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0'
                 id='sidebarToggle'

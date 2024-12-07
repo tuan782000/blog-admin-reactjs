@@ -11,7 +11,8 @@ const DataTable = props => {
         onPageChange,
         onChangeItemsPerPage,
         onKeySearch,
-        onSelectedRows
+        onSelectedRows,
+        itemPerPage
     } = props;
 
     // quản lý state chọn các item
@@ -176,6 +177,7 @@ const DataTable = props => {
                                 name='example_length'
                                 className='form-select form-select-sm ms-1 me-1'
                                 onChange={onChangeOption} // khi chọn gọi sự kiện onChangeOption
+                                value={itemPerPage}
                             >
                                 <option value='1'>1</option>
                                 <option value='2'>2</option>

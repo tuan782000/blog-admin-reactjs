@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import * as actions from '../../redux/actions';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { Link } from 'react-router-dom';
 
 const UserList = () => {
     const dispatch = useDispatch();
@@ -15,7 +16,7 @@ const UserList = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [itemPerPage, setitemPerPage] = useState(1);
+    const [itemPerPage, setitemPerPage] = useState(5);
 
     const [searchString, setSearchString] = useState('');
 
@@ -60,12 +61,18 @@ const UserList = () => {
             name: 'Action',
             element: row => (
                 <>
-                    <button
+                    {/* <button
                         type='button'
                         className='btn btn-sm btn-warning me-1'
                     >
                         <i className='fa fa-pencil'></i> Edit
-                    </button>
+                    </button> */}
+                    <Link
+                        to={`/user/edit/${row.id}`}
+                        className='btn btn-sm btn-warning me-1'
+                    >
+                        <i className='fa fa-pencil'></i> Edit
+                    </Link>
                     <button
                         type='button'
                         className='btn btn-sm btn-danger me-1'
@@ -160,13 +167,14 @@ const UserList = () => {
                         <li className='breadcrumb-item active'>Tables</li>
                     </ol>
                     <div className='mb-3'>
-                        <button
+                        <Link
                             type='button'
                             className='btn btn-sm btn-success me-2'
+                            to='/user/add'
                         >
                             <i className='fa fa-plus'></i>
                             Add new
-                        </button>
+                        </Link>
                         {selectedRows.length > 0 && (
                             <button
                                 type='button'
@@ -184,6 +192,7 @@ const UserList = () => {
                         columns={columns}
                         numOfPage={numOfPage}
                         currentPage={currentPage}
+                        itemPerPage={itemPerPage}
                         onPageChange={setCurrentPage} // onPageChange - sẽ gọi setCurrentPage để set lại currentPage - number - hàm setCurrentPage
                         onChangeItemsPerPage={setitemPerPage} // chọn số lượng item trên 1 trang - bằng cách gọi hàm setitemPerPage
                         // onKeySearch={setSearchString}
