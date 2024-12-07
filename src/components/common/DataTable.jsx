@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LiveSearch from './LiveSearch';
 
 const DataTable = props => {
@@ -10,8 +10,12 @@ const DataTable = props => {
         currentPage,
         onPageChange,
         onChangeItemsPerPage,
-        onKeySearch
+        onKeySearch,
+        onSelectedRows
     } = props;
+
+    // quản lý state chọn các item
+    const [selectedRows, setSelectedRows] = useState([]);
 
     const renderHeaders = () => {
         return columns.map((col, index) => (
@@ -20,6 +24,11 @@ const DataTable = props => {
             </th>
         ));
     };
+
+    useEffect(() => {
+        console.log('selected rows =>', selectedRows);
+        onSelectedRows(selectedRows); // đóng vai trò dữ liệu chuyển lên cho thằng cha UserList- rows
+    }, [selectedRows]);
 
     // const renderData = () => {
     //     return data.map((item, index) => (
@@ -38,11 +47,40 @@ const DataTable = props => {
     const renderData = () => {
         return data.map((item, index) => (
             <tr key={index}>
+                <td>
+                    <input
+                        type='checkbox'
+                        className='form-check-input'
+                        onChange={onClickCheckBox}
+                        value={item.id}
+                        checked={
+                            selectedRows.includes(String(item.id))
+                                ? true
+                                : false
+                        }
+                    />
+                </td>
                 {columns.map((col, ind) => (
                     <td key={ind}>{col.element(item)}</td>
                 ))}
             </tr>
         ));
+    };
+
+    const onClickCheckBox = event => {
+        let checked = event.target.checked;
+        let value = event.target.value;
+        if (checked) {
+            if (!selectedRows.includes(value)) {
+                // kiểm tra nếu chưa có trong mảng selectedRows - thì thêm vào mảng đó
+                setSelectedRows([...selectedRows, value]);
+            }
+        } else {
+            let index = selectedRows.indexOf(value);
+            const temp = [...selectedRows];
+            temp.splice(index, 1);
+            setSelectedRows(temp);
+        }
     };
 
     const renderPagination = () => {
@@ -109,6 +147,20 @@ const DataTable = props => {
         onChangeItemsPerPage(target.value);
     };
 
+    const onSelectAll = event => {
+        if (event.target.checked) {
+            // lấy toàn bộ id của các item có trong trang hiện tại bỏ vào trong array selectedRows
+            const temp = data.map(element => String(element.id)); // vì request lên server thì thông qua params đều phải dạng chuổi cho nên String ép kiểu
+            setSelectedRows(temp); // check hết nè
+        } else {
+            // remove các check mà user đã check trước đó
+            setSelectedRows([]);
+        }
+
+        // sẽ có trường hợp tất cả các item đã được check hết trong trang hiện tại thì các checkAll này cũng phải được check.
+        // xử lý ở bên dưới
+    };
+
     return (
         <div className='card mb-4'>
             <div className='card-header'>
@@ -149,26 +201,30 @@ const DataTable = props => {
                 >
                     <thead>
                         <tr>
-                            {/* <td>
+                            <td>
                                 <input
-                                    // checked={
-                                    //     selectedRows.length === data.length &&
-                                    //     data.length > 0
-                                    //         ? true
-                                    //         : false
-                                    // }
+                                    // kiểm tra tất cả các item của trang hiện tại có được check hay chưa nếu còn 1 đứa không check coi như false - tất cả đã check hết true
+                                    // điều kiện check - độ dài của mảng chứa item được check === độ dài của dữ liệu của trang hiện tại
+                                    // và
+                                    // data phải có - data.length > 0
+                                    checked={
+                                        selectedRows.length === data.length &&
+                                        data.length > 0
+                                            ? true
+                                            : false
+                                    }
                                     type='checkbox'
                                     className='form-check-input'
-                                    // onChange={onSelectAll}
+                                    onChange={onSelectAll}
                                 />
-                            </td> */}
+                            </td>
                             {renderHeaders()}
                         </tr>
                     </thead>
                     <tbody>{renderData()}</tbody>
                     <tfoot>
                         <tr>
-                            {/* <td></td> */}
+                            <td></td>
                             {renderHeaders()}
                         </tr>
                     </tfoot>

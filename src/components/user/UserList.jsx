@@ -3,6 +3,8 @@ import DataTable from '../common/DataTable';
 import requestApi from '../../helpers/api';
 import { useDispatch } from 'react-redux';
 import * as actions from '../../redux/actions';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 const UserList = () => {
     const dispatch = useDispatch();
@@ -16,6 +18,18 @@ const UserList = () => {
     const [itemPerPage, setitemPerPage] = useState(1);
 
     const [searchString, setSearchString] = useState('');
+
+    // quản lý các state component cong truyền ra
+    const [selectedRows, setSelectedRows] = useState([]); // này sẽ truyền vào api để delete
+    const [deleteItem, setDeleteItem] = useState(null); // phục vụ xoá 1
+    // quản lý delete multiple
+    const [deleteType, setDeleteType] = useState('single');
+
+    // quản lý trạng thái ẩn hiện modal
+    const [showModal, setShowModal] = useState(false);
+
+    // tự động refresh sau khi delete
+    const [refresh, setRefresh] = useState(Date.now()); // ra chuỗi timeStamp hiện tại
 
     const columns = [
         {
@@ -55,7 +69,7 @@ const UserList = () => {
                     <button
                         type='button'
                         className='btn btn-sm btn-danger me-1'
-                        // onClick={() => handleDelete(row.id)}
+                        onClick={() => handleDelete(row.id)}
                     >
                         <i className='fa fa-trash'></i> Delete
                     </button>
@@ -63,6 +77,57 @@ const UserList = () => {
             )
         }
     ];
+
+    const handleDelete = id => {
+        console.log('Single Delete with id =>', id);
+        setShowModal(true);
+        setDeleteItem(id);
+        // set lại trạng thái xoá single
+        setDeleteType('single');
+    };
+
+    const handleMultiDelete = () => {
+        console.log('Multidelete', selectedRows);
+        setShowModal(true);
+        // set lại trạng thái xoá multiple
+        setDeleteType('multi');
+    };
+
+    const requestDeleteApi = () => {
+        // Kiểm tra delete type
+        if (deleteType === 'single') {
+            dispatch(actions.controlLoading(true));
+            requestApi(`/users/${deleteItem}`, 'DELETE', [])
+                .then(response => {
+                    setShowModal(false);
+                    setRefresh(Date.now()); // giúp reload lại trang sau khi xoá thành công
+                    dispatch(actions.controlLoading(false));
+                })
+                .catch(error => {
+                    console.log(error);
+                    setShowModal(false);
+                    dispatch(actions.controlLoading(false));
+                });
+        } else {
+            dispatch(actions.controlLoading(true));
+            requestApi(
+                `/users/multiple?ids=${selectedRows.toString()}`,
+                'DELETE',
+                []
+            )
+                .then(response => {
+                    setShowModal(false);
+                    setSelectedRows([]);
+                    setRefresh(Date.now()); // giúp reload lại trang sau khi xoá thành công
+                    dispatch(actions.controlLoading(false));
+                })
+                .catch(error => {
+                    console.log(error);
+                    setShowModal(false);
+                    dispatch(actions.controlLoading(false));
+                });
+        }
+    };
 
     useEffect(() => {
         dispatch(actions.controlLoading(true));
@@ -80,7 +145,7 @@ const UserList = () => {
                 dispatch(actions.controlLoading(true));
                 console.log(err);
             });
-    }, [currentPage, itemPerPage, searchString]); // để đảm bảo khi currentPage thay đổi thì gọi lại api để dannh sách mới
+    }, [currentPage, itemPerPage, searchString, refresh]); // để đảm bảo khi currentPage thay đổi thì gọi lại api để dannh sách mới
 
     console.log(users);
     return (
@@ -94,6 +159,25 @@ const UserList = () => {
                         </li>
                         <li className='breadcrumb-item active'>Tables</li>
                     </ol>
+                    <div className='mb-3'>
+                        <button
+                            type='button'
+                            className='btn btn-sm btn-success me-2'
+                        >
+                            <i className='fa fa-plus'></i>
+                            Add new
+                        </button>
+                        {selectedRows.length > 0 && (
+                            <button
+                                type='button'
+                                className='btn btn-sm btn-danger'
+                                onClick={handleMultiDelete}
+                            >
+                                <i className='fa fa-trash'></i>
+                                Delete
+                            </button>
+                        )}
+                    </div>
                     <DataTable
                         name={'List Users'}
                         data={users}
@@ -110,9 +194,29 @@ const UserList = () => {
                             );
                             setSearchString(keyword);
                         }}
+                        onSelectedRows={rows => {
+                            console.log('selected rows in user list', rows); // dựa vào hàm onSelectedRows truyền từ con lên cha dữ liệu các item đã được check
+                            setSelectedRows(rows);
+                        }}
                     />
                 </div>
             </main>
+            <Modal
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                size='sm'
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure want to delete?</Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => setShowModal(false)}>Close</Button>
+                    <Button className='btn-danger' onClick={requestDeleteApi}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
