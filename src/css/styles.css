@@ -11717,3 +11717,11 @@ body {
     font-size: 0.75rem;
     border-radius: 0.375rem !important;
 }
+
+/* custom css */
+
+.input-file {
+    #file {
+        display: none;
+    }
+}

@@ -13,6 +13,8 @@ import UserList from './components/user/UserList';
 import UserAdd from './components/user/UserAdd';
 import UserUpdate from './components/user/UserUpdate';
 import PageNotFound from './components/PageNotFound';
+import Profile from './components/Profile';
+import PostList from './components/post/PostList';
 
 const App = () => {
     return (
@@ -21,9 +23,14 @@ const App = () => {
                 <Route element={<Main />}>
                     <Route element={<PrivateRoute />}>
                         <Route path='/' element={<Dashboard />} />
+                        {/* users */}
                         <Route path='/users' element={<UserList />} />
                         <Route path='/user/add' element={<UserAdd />} />
                         <Route path='/user/edit/:id' element={<UserUpdate />} />
+                        {/* profile */}
+                        <Route path='/profile' element={<Profile />} />
+                        {/* posts */}
+                        <Route path='/posts' element={<PostList />} />
                     </Route>
                 </Route>
                 {/* Login và Register không có sidebar và header nằm ngoài này */}

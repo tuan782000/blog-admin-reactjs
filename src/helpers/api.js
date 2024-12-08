@@ -75,12 +75,13 @@ export default function requestApi(
     endpoint,
     method,
     body = null,
-    responseType = 'json'
+    responseType = 'json',
+    contentType = 'application/json'
 ) {
     const token = localStorage.getItem('access_token');
     const headers = {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': contentType,
         Authorization: token ? `Bearer ${token}` : ''
     };
 

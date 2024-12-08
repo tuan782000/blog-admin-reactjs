@@ -6,12 +6,13 @@ import * as actions from '../../redux/actions';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
+import imageDefaultPost from '../../assets/img/default_post.jpg';
 import formatDateTime from '../../utils/DateTime';
 
-const UserList = () => {
+const PostList = () => {
     const dispatch = useDispatch();
 
-    const [users, setUsers] = useState([]);
+    const [posts, setPosts] = useState([]);
 
     const [numOfPage, setnumOfPage] = useState(1);
 
@@ -39,16 +40,29 @@ const UserList = () => {
             element: row => row.id
         },
         {
-            name: 'First name',
-            element: row => row.first_name
+            name: 'Title',
+            element: row => row.title
         },
         {
-            name: 'Last name',
-            element: row => row.last_name
+            name: 'Thumbnail',
+            element: row => (
+                <img
+                    width='70px'
+                    src={
+                        row.thumbnail
+                            ? import.meta.env.VITE_API_URL + '/' + row.thumbnail
+                            : imageDefaultPost
+                    }
+                />
+            )
         },
         {
-            name: 'Email',
-            element: row => row.email
+            name: 'Category',
+            element: row => row.category.name
+        },
+        {
+            name: 'Status',
+            element: row => (row.status === 1 ? 'Active' : 'InActive')
         },
         {
             name: 'Created at',
@@ -105,7 +119,7 @@ const UserList = () => {
         // Kiểm tra delete type
         if (deleteType === 'single') {
             dispatch(actions.controlLoading(true));
-            requestApi(`/users/${deleteItem}`, 'DELETE', [])
+            requestApi(`/posts/${deleteItem}`, 'DELETE', [])
                 .then(response => {
                     setShowModal(false);
                     setRefresh(Date.now()); // giúp reload lại trang sau khi xoá thành công
@@ -119,7 +133,7 @@ const UserList = () => {
         } else {
             dispatch(actions.controlLoading(true));
             requestApi(
-                `/users/multiple?ids=${selectedRows.toString()}`,
+                `/posts/multiple?ids=${selectedRows.toString()}`,
                 'DELETE',
                 []
             )
@@ -142,10 +156,10 @@ const UserList = () => {
         // truyền theo query - quyết định 1 trang có nhiêu phần tử
         let query = `?items_per_page=${itemPerPage}&page=${currentPage}&search=${searchString}`;
         // có thể bỏ mảng [] rỗng đi
-        requestApi(`/users${query}`, 'GET', [])
+        requestApi(`/posts${query}`, 'GET', [])
             .then(response => {
                 console.log('response', response);
-                setUsers(response.data.data);
+                setPosts(response.data.data);
                 setnumOfPage(response.data.lastPage);
                 dispatch(actions.controlLoading(false));
             })
@@ -155,7 +169,7 @@ const UserList = () => {
             });
     }, [currentPage, itemPerPage, searchString, refresh]); // để đảm bảo khi currentPage thay đổi thì gọi lại api để dannh sách mới
 
-    console.log(users);
+    console.log(posts);
     return (
         <div id='layoutSidenav_content'>
             <main>
@@ -171,7 +185,7 @@ const UserList = () => {
                         <Link
                             type='button'
                             className='btn btn-sm btn-success me-2'
-                            to='/user/add'
+                            to='/post/add'
                         >
                             <i className='fa fa-plus'></i>
                             Add new
@@ -188,8 +202,8 @@ const UserList = () => {
                         )}
                     </div>
                     <DataTable
-                        name={'List Users'}
-                        data={users}
+                        name={'List Posts'}
+                        data={posts}
                         columns={columns}
                         numOfPage={numOfPage}
                         currentPage={currentPage}
@@ -231,4 +245,4 @@ const UserList = () => {
     );
 };
 
-export default UserList;
+export default PostList;
